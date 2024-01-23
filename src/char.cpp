@@ -4,6 +4,7 @@ namespace tiny_unicode {
 
 // Tests
 
+static_assert(sizeof(char) == sizeof(uint8_t));
 static_assert(sizeof(Char) == sizeof(uint32_t));
 
 // "\0"
@@ -28,5 +29,19 @@ static_assert(a_char.is_ascii() == true);
 static_assert(a_char.as_ascii() == std::make_optional('a'));
 static_assert(a_char.as_ascii().value() == 97);
 static_assert((uint32_t)a_char == 97);
+
+// Literals
+
+constexpr Char ascii_lit = 'f'_Char;
+static_assert(ascii_lit.is_ascii() == true);
+static_assert(ascii_lit.as_ascii().has_value() == true);
+
+constexpr Char utf8_lit = u8'f'_Char;
+static_assert(utf8_lit.is_ascii() == true);
+static_assert(utf8_lit.as_ascii().has_value() == true);
+
+constexpr Char utf16_lit = u'ༀ'_Char;
+static_assert(utf16_lit.is_ascii() == false);
+static_assert(utf16_lit.as_ascii().has_value() == false);
 
 }  // namespace tiny_unicode
