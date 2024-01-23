@@ -70,51 +70,54 @@ struct Char {
     uint32_t m_data;
 };
 
-constexpr Char operator""_Char(const char literal) {
-    return Char::from_ascii(literal);
-}
-
-constexpr Char operator""_Char(const char8_t literal) {
-    if (const auto chr = Char::from_uint32(literal); chr.has_value()) {
-        return *chr;
-    } else {
-        throw "Unreabable, compiler only passes valid unicode scalar values.";
-    }
-}
-
-constexpr Char operator""_Char(const char16_t literal) {
-    if (const auto chr = Char::from_uint32(literal); chr.has_value()) {
-        return *chr;
-    } else {
-        throw "Unreabable, compiler only passes valid unicode scalar values.";
-    }
-}
-
-constexpr Char operator""_Char(const char32_t literal) {
-    if (const auto chr = Char::from_uint32(literal); chr.has_value()) {
-        return *chr;
-    } else {
-        throw "Unreabable, compiler only passes valid unicode scalar values.";
-    }
-}
-
 /**
  * @brief The smallest valid code point a `Char` can have, `0x0`.
  */
-constexpr Char CHAR_MIN = '\0'_Char;
+constexpr Char CHAR_MIN = Char::from_ascii('\0');
 
 /**
  * @brief The highest valid code point a `Char` can have, `0x10FFFF`.
  */
-constexpr Char CHAR_MAX = U'\U0010FFFF'_Char;
+constexpr Char CHAR_MAX = Char::from_uint32(0x10FFFF).value();
 
 /**
  * @brief `U+FFFD REPLACEMENT CHARACTER` (�) is used in Unicode to represent a
  * decoding error.
  */
-constexpr Char CHAR_REPLACEMENT = U'\U0000FFFD'_Char;
+constexpr Char CHAR_REPLACEMENT = Char::from_uint32(0xFFFD).value();
 
 }  // namespace tiny_unicode
+
+constexpr tiny_unicode::Char operator""_Char(const char literal) {
+    return tiny_unicode::Char::from_ascii(literal);
+}
+
+constexpr tiny_unicode::Char operator""_Char(const char8_t literal) {
+    if (const auto chr = tiny_unicode::Char::from_uint32(literal);
+        chr.has_value()) {
+        return *chr;
+    } else {
+        throw "Unreabable, compiler only passes valid unicode scalar values.";
+    }
+}
+
+constexpr tiny_unicode::Char operator""_Char(const char16_t literal) {
+    if (const auto chr = tiny_unicode::Char::from_uint32(literal);
+        chr.has_value()) {
+        return *chr;
+    } else {
+        throw "Unreabable, compiler only passes valid unicode scalar values.";
+    }
+}
+
+constexpr tiny_unicode::Char operator""_Char(const char32_t literal) {
+    if (const auto chr = tiny_unicode::Char::from_uint32(literal);
+        chr.has_value()) {
+        return *chr;
+    } else {
+        throw "Unreabable, compiler only passes valid unicode scalar values.";
+    }
+}
 
 template <>
 struct std::formatter<tiny_unicode::Char> {

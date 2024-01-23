@@ -22,4 +22,10 @@ int main() {
     for (auto chr : chars) {
         std::cout << std::format("{}, {:08x}\n", chr, (uint32_t)chr);
     }
+
+    std::cout << std::endl;
+
+    Char literal_a = 'a'_Char;
+    Char literal_b = Char::from_ascii('b');
+    std::cout << std::format("{}, {}\n", literal_a, literal_b);
 }
