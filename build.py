@@ -5,7 +5,7 @@ import os
 import sys
 
 flags = "-std=c++23 -fdiagnostics-color -Wall -Wno-padded"
-units = ["src/lib", "src/char", "test/main"]
+units = ["src/lib", "src/char", "src/str", "src/string", "test/main"]
 names = [unit.split("/").pop() for unit in units]
 
 if not os.path.exists("build"):
