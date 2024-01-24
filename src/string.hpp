@@ -21,7 +21,7 @@ struct String {
 
    private:
     /// UNSAFE: bytes must be valid UTF-8
-    String(vector<uint8_t> bytes);
+    String(vector<uint8_t>&& bytes);
 
     vector<uint8_t> m_data;
 };
