@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <format>
 #include <optional>
+#include <vector>
 
 namespace tiny_unicode {
 
@@ -48,11 +49,14 @@ struct Char {
             return {};
     }
 
-    // TODO Use char8_t
-    constexpr auto encode_utf8(std::span<uint8_t> buf) const
-        -> std::string_view {
+    /**
+     * @brief
+     * @param buf
+     * @return Length of the encoded data in bytes (1..4)
+     */
+    constexpr auto encode_utf8(std::span<uint8_t> buf) const -> size_t {
         if (is_ascii()) buf[0] = m_data;
-        return std::string_view((char*)buf.data(), buf.size());
+        return 1;
     }
 
     /**
@@ -118,18 +122,3 @@ constexpr tiny_unicode::Char operator""_Char(const char32_t literal) {
         throw "Unreabable, compiler only passes valid unicode scalar values.";
     }
 }
-
-template <>
-struct std::formatter<tiny_unicode::Char> {
-    template <class ParseContext>
-    constexpr ParseContext::iterator parse(ParseContext& ctx) {
-        return ctx.begin();
-    }
-
-    template <class FmtContext>
-    FmtContext::iterator format(tiny_unicode::Char chr, FmtContext& ctx) const {
-        uint8_t buf[4] = {0, 0, 0, 0};
-        auto str = chr.encode_utf8(buf);
-        return std::format_to(ctx.out(), "{}", str);
-    }
-};

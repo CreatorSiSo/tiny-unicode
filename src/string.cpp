@@ -1,8 +1,9 @@
 #include "string.hpp"
 
-#include <cstring>
-
 namespace tiny_unicode {
+
+using std::span;
+using std::vector;
 
 enum class ByteKind {
     Invalid = 0,

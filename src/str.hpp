@@ -8,15 +8,19 @@
 
 namespace tiny_unicode {
 
-using std::span;
-
 struct Str {
     Str(String& string);
 
-    auto as_bytes() const -> span<const uint8_t>;
+    /// UNSAFE: Bytes have to be valid UTF-8.
+    static auto from_bytes_unsafe(std::span<uint8_t> bytes) -> Str;
+
+    auto as_bytes() const -> std::span<const uint8_t>;
 
    private:
-    span<uint8_t> m_data;
+    /// UNSAFE: Bytes have to be valid UTF-8.
+    Str(std::span<uint8_t> data);
+
+    std::span<uint8_t> m_data;
 };
 
 }  // namespace tiny_unicode
