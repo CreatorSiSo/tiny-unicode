@@ -16,7 +16,8 @@ struct std::formatter<tiny_unicode::Char> {
     }
 
     template <class FmtContext>
-    FmtContext::iterator format(tiny_unicode::Char chr, FmtContext& ctx) const {
+    constexpr FmtContext::iterator format(tiny_unicode::Char chr,
+                                          FmtContext& ctx) const {
         std::array<uint8_t, 4> buffer = {0, 0, 0, 0};
         auto length = chr.encode_utf8(buffer);
         // SAFETY: encode_utf8 writes valid UTF-8 data into buffer, creating Str
@@ -36,8 +37,8 @@ struct std::formatter<tiny_unicode::String> {
     }
 
     template <class FmtContext>
-    FmtContext::iterator format(tiny_unicode::String string,
-                                FmtContext& ctx) const {
+    constexpr FmtContext::iterator format(tiny_unicode::String string,
+                                          FmtContext& ctx) const {
         return std::format_to(ctx.out(), "{}", tiny_unicode::Str(string));
     }
 };
@@ -50,7 +51,8 @@ struct std::formatter<tiny_unicode::Str> {
     }
 
     template <class FmtContext>
-    FmtContext::iterator format(tiny_unicode::Str str, FmtContext& ctx) const {
+    constexpr FmtContext::iterator format(tiny_unicode::Str str,
+                                          FmtContext& ctx) const {
         // auto bytes = str.as_bytes();
         // // SAFETY: Library only compiles if sizeof(char) == sizeof(uint8_t)
         // return std::format_to(
@@ -69,18 +71,18 @@ struct std::formatter<tiny_unicode::Str> {
 namespace tiny_unicode {
 
 template <typename... Args>
-auto write(std::ostream& out, std::format_string<Args&...> fmt, Args&&... args)
-    -> std::ostream& {
+constexpr auto write(std::ostream& out, std::format_string<Args&...> fmt,
+                     Args&&... args) -> std::ostream& {
     return out << std::format(fmt, args...);
 }
 
 template <typename... Args>
-auto write(std::ostream& out, const String& string) -> std::ostream& {
+constexpr auto write(std::ostream& out, const String& string) -> std::ostream& {
     return out << std::format("{}", string);
 }
 
 template <typename... Args>
-auto write(std::ostream& out, Str str) -> std::ostream& {
+constexpr auto write(std::ostream& out, Str str) -> std::ostream& {
     for (uint8_t byte : str.as_bytes()) {
         // SAFETY: Library only compiles if sizeof(char) == sizeof(uint8_t)
         out << (char)byte;

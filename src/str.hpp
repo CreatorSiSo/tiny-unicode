@@ -9,16 +9,21 @@
 namespace tiny_unicode {
 
 struct Str {
-    Str(String& string);
+    // SAFETY: `Str` implements the same operations as `String`
+    constexpr Str(String& string) : m_data(string.as_bytes_mut_unsafe()) {}
 
     /// UNSAFE: Bytes have to be valid UTF-8.
-    static auto from_bytes_unsafe(std::span<uint8_t> bytes) -> Str;
+    constexpr static auto from_bytes_unsafe(std::span<uint8_t> bytes) -> Str {
+        return Str(bytes);
+    }
 
-    auto as_bytes() const -> std::span<const uint8_t>;
+    constexpr auto as_bytes() const -> std::span<const uint8_t> {
+        return m_data;
+    }
 
    private:
     /// UNSAFE: Bytes have to be valid UTF-8.
-    Str(std::span<uint8_t> data);
+    constexpr Str(std::span<uint8_t> data) : m_data(data) {}
 
     std::span<uint8_t> m_data;
 };
